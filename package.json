@@ -1,0 +1,23 @@
+{
+  "name": "Bocchi",
+  "version": "1.0.0",
+  "description": "prueba bot discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lokitosi10/Bocchi.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lokitosi10/Bocchi/issues"
+  },
+  "homepage": "https://github.com/Lokitosi10/Bocchi#readme",
+  "dependencies": {
+    "discord.js": "^12.4.0"
+  }
+}
