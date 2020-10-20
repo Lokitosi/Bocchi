@@ -39,13 +39,16 @@ client.on('message', (message) => {
 client.on('message', (message) => {
     if (message.content.startsWith(prefix + 'Trabajo')) {
         scrapper.buscar();
+        let til = scrapper.getTitulos()
+        let des = scrapper.getDesc()
+        let lin = scrapper.getLinks()
         const embedDatos = new Discord.MessageEmbed()
             .setTitle("Oferta de empleo")
             .setColor(0x00AE86)
             .setThumbnail("https://lh3.googleusercontent.com/sSaqlEULxwyu2BnXSewoyWx8CP8TpoKvVWEW8izXRsw3lIYmGnSpwruU85WMvvTbK6k=s180")
             .setTimestamp()
-            .addField(titulo,des)
-            .addField("Lik", lin)
+            .addField(til[0],des[0])
+            .addField("Link", "https://www.computrabajo.com.co"+lin[0])
             .setFooter("Bocchi super fuerte de servicio", client.user.avatarURL())
 
         message.channel.send({ embed: embedDatos });
