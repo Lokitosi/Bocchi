@@ -1,59 +1,49 @@
 // Parametros iniciales:
 const Discord = require("discord.js"); // Const variable constante
 const client = new Discord.Client();
-const config = require("./config/config.json");
-const scrapper = require("./funciones/scrapper")
+let { readdirSync } = require('fs');
+//archivo configuraciones :
+client.config = require("./config/config.js");
 
+client.comandos = new Discord.Collection();
 
-//Variables:
-let prefix = config.prefix;
-// precauciones 
-//if (!message.content.startsWith(prefix)) return;
-//if (message.author.bot) return;
+// Controlador de comandos
 
-// Comandos
-client.on('ready', () => {
-    console.log("estoy viva");
-});
+for (const file of readdirSync('./Comandos/')){
+    if (file.endsWith(".js")){
+        // recolecta solo el nombre sin el .js
+        let fileName = file.substring(0,file.length-3);
+        // exporta el comando 
+        let fileContents = require(`./Comandos/${file}`);
 
-client.on('message', (message) => {
-    if (message.content.startsWith(prefix + 'Hola Bocchi')) {
-        message.channel.send('Bocchi super fuerte de servicio <:bch1:767911341125795871>');
+        // agraga el nombre del comando a la coleccion de comandos
+        client.comandos.set(fileName, fileContents);
     }
+}
 
-});
+// Controlador de eventos:
 
-client.on('message', (message) => {
-    if (message.content.startsWith(prefix + '7w7')) {
-        message.channel.send('La recomendacion del dia');
-        function aleatorio(a,b) {
-            return Math.round(Math.random()*(b-a)+parseInt(a));
-            }
-        a = aleatorio(100000,500000);
-        message.channel.send("https://nhentai.to/g/"+a);
+// se llama a la carpeta eventos
+for(const file of readdirSync('./Eventos/')){
+    if(file. endsWith(".js")){
+        // recolecta solo el nombre sin el .js
+        let fileName = file.substring(0,file.length-3);
+        // exporta el comando 
+        let fileContents = require(`./Eventos/${file}`);
+
+        // cuando se activa el evento se exporta la funcion y se le pasa el cliente .
+        client.on(fileName , fileContents.bind(null , client));
+
+        // elimina memoria cache
+        delete require.cache[require.resolve(`./Eventos/${file}`)];
     }
+}
+// login
 
-});
-// trabajo
-
-client.on('message', (message) => {
-    if (message.content.startsWith(prefix + 'Trabajo')) {
-        scrapper.buscar();
-        let til = scrapper.getTitulos()
-        let des = scrapper.getDesc()
-        let lin = scrapper.getLinks()
-        const embedDatos = new Discord.MessageEmbed()
-            .setTitle("Oferta de empleo")
-            .setColor(0x00AE86)
-            .setThumbnail("https://lh3.googleusercontent.com/sSaqlEULxwyu2BnXSewoyWx8CP8TpoKvVWEW8izXRsw3lIYmGnSpwruU85WMvvTbK6k=s180")
-            .setTimestamp()
-            .addField(til[0],des[0])
-            .addField("Link", "https://www.computrabajo.com.co"+lin[0])
-            .setFooter("Bocchi super fuerte de servicio", client.user.avatarURL())
-
-        message.channel.send({ embed: embedDatos });
-    }
-
-});
-
-client.login(config.token);
+//inicia sesion
+client.login(client.config.token).then(()=>{
+    console.log(`Estoy listo, soy ${client.user.tag}`);
+}).catch((err)=>{
+    //Error?
+    console.error("Error al iniciar sesion: "+err);
+})
