@@ -32,7 +32,7 @@ for(const file of readdirSync('./Eventos/')){
         let fileContents = require(`./Eventos/${file}`);
 
         // cuando se activa el evento se exporta la funcion y se le pasa el cliente .
-        client.on(fileName , fileContents.bind(null , client));
+        client.on(fileName , fileContents.bind(null ,client));
 
         // elimina memoria cache
         delete require.cache[require.resolve(`./Eventos/${file}`)];
@@ -42,7 +42,7 @@ for(const file of readdirSync('./Eventos/')){
 
 //inicia sesion
 client.login(client.config.token).then(()=>{
-    console.log(`Estoy listo, soy ${client.user.tag}`);
+    console.log(`Estoy lista, soy ${client.user.tag}`);
 }).catch((err)=>{
     //Error?
     console.error("Error al iniciar sesion: "+err);
