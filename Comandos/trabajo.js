@@ -6,7 +6,7 @@ var links = [];
 var titulos = [];
 var desc = [];
 function buscar() {
-    request('https://www.computrabajo.com.co/trabajo-de-panadero?q=panadero', (err, res, body) => {
+    request('https://www.computrabajo.com.co/trabajo-de-pintor?q=pintor', (err, res, body) => {
 
         if (!err && res.statusCode == 200) { // si no hay error entonces ..
             let $ = cheerio.load(body);// me carga el cuerpo de la pagina
@@ -35,20 +35,82 @@ function getLinks() {
 }
 buscar();
 
-module.exports = (client, message, args) => {
+module.exports = async (client, message, args) => {
     buscar();
     let til = getTitulos()
     let des = getDesc()
     let lin = getLinks()
-    const embedDatos = new Discord.MessageEmbed()
-        .setTitle("Oferta de empleo")
-        .setColor(0x00AE86)
-        .setThumbnail("https://lh3.googleusercontent.com/sSaqlEULxwyu2BnXSewoyWx8CP8TpoKvVWEW8izXRsw3lIYmGnSpwruU85WMvvTbK6k=s180")
-        .setTimestamp()
-        .addField(til[0], des[0])
-        .addField("Link", "https://www.computrabajo.com.co" + lin[0])
-        .setFooter("Bocchi super fuerte de servicio", client.user.avatarURL())
+    let oferta = 0;
+    function generarOferta(res) {
+        let embedDatos = new Discord.MessageEmbed()
+            .setTitle("Oferta de empleo")
+            .setColor(0x00AE86)
+            .setThumbnail("https://lh3.googleusercontent.com/sSaqlEULxwyu2BnXSewoyWx8CP8TpoKvVWEW8izXRsw3lIYmGnSpwruU85WMvvTbK6k=s180")
+            .setTimestamp()
+            .addField(til[res], des[res])
+            .addField("Link", "https://www.computrabajo.com.co" + lin[res])
+            .setFooter("Bocchi super fuerte de servicio", client.user.avatarURL())
+        return message.channel.send({ embed: embedDatos });
+    }
+    async function verReaccion(reaction) {
+        if (reaction.emoji.name === '➡️') {
+            m1.delete();
+            oferta = oferta+1;
+            m1 = await generarOferta(oferta + 1)
+            await m1.react('⬅️')
+            await m1.react('❎')
+            await m1.react('➡️')
+            const filter = (reaction, user) => {
+                return ['➡️', '❎', '⬅️'].includes(reaction.emoji.name) && user.id === message.member.id;
+            };
+            m1.awaitReactions(filter, { max: 1, time: 120000, errors: ['time'] })
+                .then(async collected => {
+                    const reaction = collected.first();
+                    verReaccion(reaction);
+                })
+        } else if (reaction.emoji.name === '⬅️') {
+            m1.delete();
+            oferta = oferta-1;
+            if (oferta === 0){
+                m1 = await generarOferta(oferta)
+                await m1.react('❎')
+                await m1.react('➡️')
+                const filter = (reaction, user) => {
+                    return ['➡️', '❎'].includes(reaction.emoji.name) && user.id === message.member.id;
+                };
+                m1.awaitReactions(filter, { max: 1, time: 120000, errors: ['time'] })
+                    .then(async collected => {
+                        const reaction = collected.first();
+                        verReaccion(reaction);
+                    })
+            }else{
+            m1 = await generarOferta(oferta)
+            await m1.react('⬅️')
+            await m1.react('❎')
+            await m1.react('➡️')
+            const filter = (reaction, user) => {
+                return ['➡️', '❎', '⬅️'].includes(reaction.emoji.name) && user.id === message.member.id;
+            };
+            m1.awaitReactions(filter, { max: 1, time: 120000, errors: ['time'] })
+                .then(async collected => {
+                    const reaction = collected.first();
+                    verReaccion(reaction);
+                })
+        }} else {
+            console.log("gracias por usarme")
+        }
 
-    message.channel.send({ embed: embedDatos });
+    }
+    var m1;
+    m1 = await generarOferta(oferta)
+    await m1.react('❎')
+    await m1.react('➡️')
+    const filter = (reaction, user) => {
+        return ['➡️', '❎'].includes(reaction.emoji.name) && user.id === message.member.id;
+    };
+    m1.awaitReactions(filter, { max: 1, time: 120000, errors: ['time'] })
+        .then(async collected => {
+            const reaction = collected.first();
+            verReaccion(reaction);
+        })
 }
-
