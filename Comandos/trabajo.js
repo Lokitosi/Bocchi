@@ -1,15 +1,16 @@
 module.exports = async (client, message, args) => {
 
+    // variables necesarias:
     const cheerio = require('cheerio');
-    const fs = require('fs');
     const request = require('request');
     const Discord = require("discord.js");
     var links = [];
     var titulos = [];
     var desc = [];
     let palabra = args.join(' ');
-    if (!palabra) return message.channel.send('Debe escribir un mensaje.')
+    if (!palabra) return message.channel.send('Debes escribir el cargo a buscar.')
 
+    // Funcion Scrapper:
     function buscar(palabra) {
         request('https://www.computrabajo.com.co/trabajo-de-' + palabra + '?q=' + palabra, (err, res, body) => {
 
@@ -29,6 +30,9 @@ module.exports = async (client, message, args) => {
         })
 
     }
+    buscar(palabra);
+
+    // obtener listas de resultados:
     function getTitulos() {
         return titulos;
     }
@@ -38,14 +42,14 @@ module.exports = async (client, message, args) => {
     function getLinks() {
         return links;
     }
-
-
-
-    buscar(palabra);
+    
+    // Variables necesarias para la tarjeta:
     let til = getTitulos()
     let des = getDesc()
     let lin = getLinks()
-    let oferta = 1;
+    var oferta = 0;
+
+    // Funcion que genera la tarjeta laboral:
     function generarOferta(res) {
         let embedDatos = new Discord.MessageEmbed()
             .setTitle("Oferta de empleo")
@@ -57,11 +61,26 @@ module.exports = async (client, message, args) => {
             .setFooter("Bocchi super fuerte de servicio", client.user.avatarURL())
         return message.channel.send({ embed: embedDatos });
     }
+
+    //Funcion que genera el saludo y las instrucciones:
+    function generarSaludo() {
+        let embedDatos = new Discord.MessageEmbed()
+            .setTitle("Buscador de empleos")
+            .setColor(0x00AE86)
+            .setThumbnail("https://lh3.googleusercontent.com/sSaqlEULxwyu2BnXSewoyWx8CP8TpoKvVWEW8izXRsw3lIYmGnSpwruU85WMvvTbK6k=s180")
+            .setTimestamp()
+            .addField("Bocchi te ayuda:","espera 1 segundo y reacciona para pasar por las ofertas laborales ")
+            .setFooter("Bocchi super fuerte de servicio", client.user.avatarURL())
+        
+        return message.channel.send({ embed: embedDatos });
+    }
+
+    //Verificador de reacciones:
     async function verReaccion(reaction) {
         if (reaction.emoji.name === '➡️') {
             m1.delete();
             oferta = oferta + 1;
-            m1 = await generarOferta(oferta + 1)
+            m1 = await generarOferta(oferta)
             await m1.react('⬅️')
             await m1.react('❎')
             await m1.react('➡️')
@@ -76,7 +95,7 @@ module.exports = async (client, message, args) => {
         } else if (reaction.emoji.name === '⬅️') {
             m1.delete();
             oferta = oferta - 1;
-            if (oferta === 1) {
+            if (oferta === 0) {
                 m1 = await generarOferta(oferta)
                 await m1.react('❎')
                 await m1.react('➡️')
@@ -107,8 +126,10 @@ module.exports = async (client, message, args) => {
         }
 
     }
+
+    // Inicio de el funcion, y primera reaccion:
     var m1;
-    m1 = await generarOferta(oferta)
+    m1 = await generarSaludo();
     await m1.react('❎')
     await m1.react('➡️')
     const filter = (reaction, user) => {

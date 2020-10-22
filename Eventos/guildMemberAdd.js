@@ -1,5 +1,5 @@
 module.exports = (client, member,message) => {
-    
+    // Nuevo miembro:
     member.guild.channels.cache.get("767877864409792516").send({embed: {
         color: 10181046 ,
         author: {
@@ -17,6 +17,4 @@ module.exports = (client, member,message) => {
         }
       }
   });
-//member.guild.channels.cache.get("767877864409792516").send(`Bienvenido ${member.user.username}!!`)
-
 }
