@@ -1,0 +1,17 @@
+module.exports = (client, message, args) => {
+
+const Discord = require("discord.js");
+message.channel.send('Lista de comandos');
+
+const embed = new Discord.MessageEmbed()
+    .setAuthor(client.user.username, client.user.avatarURL())
+    .addField('+doujin', 'Te recomienda un doujinshi aleatorio (beta)')
+    .addField('+help', 'muestra todos los comandos')
+    .addField('+oferta', 'Muestra ofertas laborales')
+    .addField('+saludo', 'Bocchi te saluda')
+    .addField('+trabajo', 'busca ofertas laborales por las palabras dadas despues del comando')
+    .setFooter("Version 0.5--Bocchi super fuerte de servicio", client.user.avatarURL())
+    .setColor(16580705)
+    
+message.channel.send(embed);
+}

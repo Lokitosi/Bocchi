@@ -99,7 +99,7 @@ module.exports = async (client, message, args) => {
                     })
             }
         } else {
-            message.channel.send('Gracias por usarme <a:44:768643221734817822>');
+            message.channel.send('Un gusto ayudar <a:44:768643221734817822>');
         }
 
     }

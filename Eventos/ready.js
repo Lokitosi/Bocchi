@@ -1,16 +1,10 @@
-
 module.exports = (client) => {
-  
-    client.user.setPresence( 
-        {
-          status: "online", 
-          game: { 
-            name: '!ping pong', 
-            url: null, // Establece el enlace del juego si el tipo es "STREAMING".
-            type: "PLAYING"
+  client.user.setPresence(
+      {
+          status: "online",
+          activity:{
+              name: `Watching your deepests thoughts `,
           }
-        }
-      );
-     
-      
-    }
+      }
+  );
+}
