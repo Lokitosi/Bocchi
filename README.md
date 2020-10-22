@@ -1,7 +1,7 @@
 # Bocchi
 prueba bot discord
 
-<img src="https://cdn.discordapp.com/attachments/765191080416903168/768656668673835048/unknown.png"/>
+<img src="https://cdn.discordapp.com/attachments/765191080416903168/768865643020812318/unknown.png" alt ="descrpcion"/>
 
 ## antes de usar instalar mediante npm:
 Discord.js
