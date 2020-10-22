@@ -7,11 +7,9 @@ module.exports = async (client, message, args) => {
     var links = [];
     var titulos = [];
     var desc = [];
-    let palabra = args.join(' ');
-    if (!palabra) return message.channel.send('Debe escribir un mensaje.')
 
-    function buscar(palabra) {
-        request('https://www.computrabajo.com.co/trabajo-de-' + palabra + '?q=' + palabra, (err, res, body) => {
+    function buscar() {
+        request('https://www.computrabajo.com.co/ofertas-de-trabajo/', (err, res, body) => {
 
             if (!err && res.statusCode == 200) { // si no hay error entonces ..
                 let $ = cheerio.load(body);// me carga el cuerpo de la pagina
@@ -39,9 +37,7 @@ module.exports = async (client, message, args) => {
         return links;
     }
 
-
-
-    buscar(palabra);
+    buscar();
     let til = getTitulos()
     let des = getDesc()
     let lin = getLinks()
