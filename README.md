@@ -5,7 +5,9 @@ prueba bot discord
 
 ## antes de usar instalar mediante npm:
 Discord.js
+
 cheerio
+
 request
 
 ***©Lokitosi10-2020***</br>
